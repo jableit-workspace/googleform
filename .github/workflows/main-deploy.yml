@@ -22,7 +22,6 @@ jobs:
           script_stop: true
           script: |
             cd /server/googleform
-            cd /aspera-server-api/k-server
             git pull
             npm install
             npm run build
