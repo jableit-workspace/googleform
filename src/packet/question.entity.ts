@@ -15,6 +15,10 @@ export class QuestionMain extends BaseAutoEntity {
   email: string;
   @Column({ default: 0, comment: '설문참여인원' })
   write_cnt: number;
+  @Column({ default: '', comment: 'url' })
+  url: string;
+  @Column({ default: '', comment: '비밀번호' })
+  password: string;
 }
 
 @Entity('question')
