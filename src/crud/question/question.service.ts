@@ -254,7 +254,7 @@ export class QuestionService {
               where: { ques_id: item.id },
               order: { id: 'ASC' },
             });
-            console.log(options);
+
             return {
               ...item,
               options,
