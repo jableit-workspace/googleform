@@ -33,7 +33,7 @@ export class QuestionService {
       ques_cnt: dto.questions.length,
       email: dto.email,
       url: randomURL,
-      password: generateRandomCode(6),
+      password: generateRandomCode(4),
     });
     const result = await this.repoQuestionMain.save(newQuestion);
 
