@@ -224,17 +224,52 @@ export class QuestionService {
   }
 
   async getStatistic(id: number) {
-    const list = await this.repoQuestionRecv.find({
-      select: ['id', 'answer'],
-      where: { ques_id: id },
-      order: { createdAt: 'ASC' },
-    });
+    const main = await this.repoQuestionMain.findOneBy({ id });
+
+    if (!main) {
+      return {
+        code: 404,
+        message: 'not found',
+        time: Date(),
+        result: null,
+      };
+    }
+
+    const list = await this.repoQuestion
+      .createQueryBuilder('p')
+      .select([
+        'p.id as id',
+        'p.type as type',
+        'p.title as title',
+        'p.optionyn as optionyn',
+      ])
+      .where('p.qmain_id = :id', { id })
+      .orderBy('p.id', 'ASC')
+      .getRawMany()
+      .then(async (result) => {
+        return Promise.all(
+          result.map(async (item) => {
+            const options = await this.repoQuestionOption.find({
+              select: ['id', 'name', 'choice'],
+              where: { ques_id: item.id },
+              order: { id: 'ASC' },
+            });
+
+            return {
+              ...item,
+              option: options,
+            };
+          }),
+        );
+      });
 
     return {
       code: 200,
       message: 'success',
       time: Date(),
       result: {
+        title: main.title,
+        description: main.description,
         list,
       },
     };
