@@ -10,6 +10,7 @@ import {
 import { Repository } from 'typeorm';
 import { WriteQuestionDto } from './dto/insert-question.dto';
 import { write } from 'fs';
+import { generateRandomCode, randomCharactor } from 'src/utils/util';
 
 @Injectable()
 export class QuestionService {
@@ -25,11 +26,14 @@ export class QuestionService {
   ) {}
 
   async create(dto: CreateQuestionDto) {
+    const randomURL = randomCharactor(8);
     const newQuestion = this.repoQuestionMain.create({
       title: dto.title,
       description: dto.description,
       ques_cnt: dto.questions.length,
       email: dto.email,
+      url: randomURL,
+      password: generateRandomCode(6),
     });
     const result = await this.repoQuestionMain.save(newQuestion);
 
