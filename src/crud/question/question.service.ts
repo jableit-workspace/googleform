@@ -9,7 +9,6 @@ import {
 } from 'src/packet/question.entity';
 import { Repository } from 'typeorm';
 import { WriteQuestionDto } from './dto/insert-question.dto';
-import { write } from 'fs';
 import { generateRandomCode, randomCharactor } from 'src/utils/util';
 
 @Injectable()
@@ -187,50 +186,6 @@ export class QuestionService {
       message: 'success',
       time: Date(),
     };
-  }
-
-  async getResult(id: number) {
-    // const data = await this.repoQuestionRecv
-    //   .createQueryBuilder('p')
-    //   .innerJoinAndMapOne('p.id', ShareItem, 'pt', 'p.id = pt.item_id')
-    //   .select([
-    //     'p.id as id',
-    //     'p.type as type',
-    //     'p.path as path',
-    //     'p.size as size',
-    //     'p.node_name as node_name',
-    //     'p.name as name',
-    //   ])
-    //   .where('p.useyn = true')
-    //   .andWhere('pt.url = :url', { url })
-    //   .orderBy('pt.id', 'ASC')
-    //   .getRawMany();
-    // const member = await this.repoQuestionRecv
-    //   .createQueryBuilder()
-    //   .distinct(true)
-    //   .select('mycode')
-    //   .groupBy('mycode')
-    //   .getRawMany()
-    //   .then((result) => {
-    //     return result.map((item) => {
-    //       if (item.mycode !== '') {
-    //         info.push(item.mycode);
-    //       }
-    //     });
-    //   });
-    // const list = await this.repoQuestionRecv.find({
-    //   select: ['id', 'answer'],
-    //   where: { ques_id: id },
-    //   order: { createdAt: 'ASC' },
-    // });
-    // return {
-    //   code: 200,
-    //   message: 'success',
-    //   time: Date(),
-    //   result: {
-    //     list,
-    //   },
-    // };
   }
 
   async getStatistic(id: number) {
