@@ -31,6 +31,8 @@ export class CreateQuestionDto {
   @IsString()
   @Length(100)
   description: string;
+  @IsString()
+  password: string;
   @IsEmail()
   email: string;
   @IsArray()
