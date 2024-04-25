@@ -157,6 +157,11 @@ export class QuestionService {
       };
     }
 
+    await this.repoQuestion.findOneBy({ qmain_id: id }).then((result) => {
+      result.write_cnt += 1;
+      this.repoQuestion.save(result);
+    });
+
     dto.questions.forEach(async (q) => {
       const newQ = this.repoQuestionRecv.create({
         ques_id: id,
@@ -236,16 +241,11 @@ export class QuestionService {
     }
 
     const list = await this.repoQuestion
-      .createQueryBuilder('p')
-      .select([
-        'p.id as id',
-        'p.type as type',
-        'p.title as title',
-        'p.optionyn as optionyn',
-      ])
-      .where('p.qmain_id = :id', { id })
-      .orderBy('p.id', 'ASC')
-      .getRawMany()
+      .find({
+        select: ['id', 'type', 'title', 'optionyn'],
+        where: { qmain_id: id },
+        order: { id: 'ASC' },
+      })
       .then(async (result) => {
         return Promise.all(
           result.map(async (item) => {
@@ -254,10 +254,10 @@ export class QuestionService {
               where: { ques_id: item.id },
               order: { id: 'ASC' },
             });
-
+            console.log(options);
             return {
               ...item,
-              option: options,
+              options,
             };
           }),
         );
