@@ -13,6 +13,8 @@ export class QuestionMain extends BaseAutoEntity {
   recv_cnt: number;
   @Column({ default: '', comment: '생성자' })
   email: string;
+  @Column({ default: 0, comment: '설문참여인원' })
+  write_cnt: number;
 }
 
 @Entity('question')
@@ -26,8 +28,8 @@ export class Question extends BaseAutoEntity {
   title: string;
   @Column({ default: false, comment: '필수선택유무' })
   optionyn: boolean;
-  @Column({ default: 0, comment: '설문참여인원' })
-  write_cnt: number;
+  // @Column({ default: 0, comment: '설문참여인원' })
+  // write_cnt: number;
 }
 
 @Entity('question_option')

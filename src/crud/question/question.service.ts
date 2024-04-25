@@ -9,6 +9,7 @@ import {
 } from 'src/packet/question.entity';
 import { Repository } from 'typeorm';
 import { WriteQuestionDto } from './dto/insert-question.dto';
+import { write } from 'fs';
 
 @Injectable()
 export class QuestionService {
@@ -157,9 +158,9 @@ export class QuestionService {
       };
     }
 
-    await this.repoQuestion.findOneBy({ qmain_id: id }).then((result) => {
+    await this.repoQuestionMain.findOneBy({ id }).then((result) => {
       result.write_cnt += 1;
-      this.repoQuestion.save(result);
+      this.repoQuestionMain.save(result);
     });
 
     dto.questions.forEach(async (q) => {
@@ -242,7 +243,7 @@ export class QuestionService {
 
     const list = await this.repoQuestion
       .find({
-        select: ['id', 'type', 'title', 'optionyn', 'write_cnt'],
+        select: ['id', 'type', 'title', 'optionyn'],
         where: { qmain_id: id },
         order: { id: 'ASC' },
       })
@@ -270,6 +271,7 @@ export class QuestionService {
       result: {
         title: main.title,
         description: main.description,
+        write_cnt: main.write_cnt,
         list,
       },
     };
