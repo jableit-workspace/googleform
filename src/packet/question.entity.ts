@@ -19,9 +19,8 @@ export class QuestionMain extends BaseAutoEntity {
 
 @Entity('question')
 export class Question extends BaseAutoEntity {
-  @Column({ default: 0, comment: 'id' })
+  @Column({ default: 0, comment: '설문 메인의 id' })
   qmain_id: number;
-
   @Column({ default: 1, comment: '1.단답형, 2.객관식, 3.체크박스' })
   type: number;
   @Column({ default: '', comment: '설문지제목' })
