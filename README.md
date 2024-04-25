@@ -30,53 +30,28 @@
 
 ```bash
 # POST /question : 설문지 등록
+input params
+  title: string
+  description string
+  email: string
+  questions: array
+    type: number
+    name: string
+    option: string
+    optionyn: boolean
+
+output params
+  url: string
+  password : string
 
 # GET /question : 등록 설문지 전체 조회
 
 # GET /question/[id] : 등록 설문지 조회
 
+# PUT /question/my/[id] : 설문지 등록
 
+# GET /question/statistics/[id] : 설문 결과 통계 조회
 
 ```
 
 ---
-
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).

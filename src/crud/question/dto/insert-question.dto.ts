@@ -9,6 +9,9 @@ import {
 export class WriteMyDto {
   @IsNotEmpty()
   @IsNumber()
+  type: number;
+  @IsNotEmpty()
+  @IsNumber()
   id: number;
   @IsNotEmpty()
   @IsString()

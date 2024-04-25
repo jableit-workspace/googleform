@@ -8,8 +8,9 @@ import {
   QuestionRecv,
 } from 'src/packet/question.entity';
 import { Repository } from 'typeorm';
-import { WriteQuestionDto } from './dto/insert-question.dto';
+import { WriteMyDto, WriteQuestionDto } from './dto/insert-question.dto';
 import { generateRandomCode, randomCharactor } from 'src/utils/util';
+import { questionType } from 'src/type';
 
 @Injectable()
 export class QuestionService {
@@ -25,14 +26,12 @@ export class QuestionService {
   ) {}
 
   async create(dto: CreateQuestionDto) {
-    const randomURL = randomCharactor(8);
     const newQuestion = this.repoQuestionMain.create({
       title: dto.title,
       description: dto.description,
       ques_cnt: dto.questions.length,
       email: dto.email,
-      url: randomURL,
-      password: generateRandomCode(4),
+      password: dto.password,
     });
     const result = await this.repoQuestionMain.save(newQuestion);
 
@@ -58,7 +57,7 @@ export class QuestionService {
       code: 200,
       message: 'success',
       time: Date(),
-      result,
+      id: result.id,
     };
   }
 
@@ -117,10 +116,10 @@ export class QuestionService {
               where: { ques_id: item.id },
               order: { id: 'ASC' },
             });
-            const namelist = options.map((item) => item.name.trim()).join(',');
+            // const namelist = options.map((item) => item.name.trim()).join(',');
             return {
               ...item,
-              option: namelist,
+              option: options,
             };
           }),
         );
@@ -133,9 +132,51 @@ export class QuestionService {
       result: {
         title: main.title,
         description: main.description,
+        password: main.password,
         list,
       },
     };
+  }
+
+  //체크박스 형식 설문 처리
+  async processCheckBox(mydto: WriteMyDto) {
+    await this.repoQuestionOption
+      .find({
+        where: { ques_id: mydto.id },
+      })
+      .then((result) => {
+        const checkList = mydto.answer.split(',');
+        checkList.map((check) => {
+          console.log(check, 'tt');
+          const findObject = result.find((e) => e.name.trim() === check.trim());
+
+          if (!findObject) return;
+
+          return this.repoQuestionOption.save({
+            ...findObject,
+            choice: findObject.choice + 1,
+          });
+        });
+      });
+  }
+
+  async processRadio(mydto: WriteMyDto) {
+    await this.repoQuestionOption
+      .find({
+        where: { ques_id: mydto.id },
+      })
+      .then((result) => {
+        const findObject = result.find(
+          (e) => e.name.trim() === mydto.answer.trim(),
+        );
+
+        if (!findObject) return;
+
+        return this.repoQuestionOption.save({
+          ...findObject,
+          choice: findObject.choice + 1,
+        });
+      });
   }
 
   async writeQuestion(id: number, dto: WriteQuestionDto) {
@@ -166,7 +207,24 @@ export class QuestionService {
       this.repoQuestionMain.save(result);
     });
 
-    dto.questions.forEach(async (q) => {
+    dto.questions.map(async (q) => {
+      switch (q.type) {
+        case questionType.단답형:
+          await this.repoQuestionOption
+            .findOneBy({ ques_id: q.id })
+            .then(async (result) => {
+              result.choice += 1;
+              await this.repoQuestionOption.save(result);
+            });
+          break;
+        case questionType.객관식:
+          this.processRadio(q);
+          break;
+        case questionType.체크박스:
+          this.processCheckBox(q);
+          break;
+      }
+
       const newQ = this.repoQuestionRecv.create({
         ques_id: id,
         ques_sub_id: q.id,
@@ -174,11 +232,6 @@ export class QuestionService {
         answer: q.answer,
       });
       await this.repoQuestionRecv.save(newQ);
-
-      this.repoQuestionOption.findOneBy({ ques_id: q.id }).then((result) => {
-        result.name === q.answer ? (result.choice += 1) : (result.choice += 0);
-        this.repoQuestionOption.save(result);
-      });
     });
 
     return {
