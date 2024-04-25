@@ -242,7 +242,7 @@ export class QuestionService {
 
     const list = await this.repoQuestion
       .find({
-        select: ['id', 'type', 'title', 'optionyn'],
+        select: ['id', 'type', 'title', 'optionyn', 'write_cnt'],
         where: { qmain_id: id },
         order: { id: 'ASC' },
       })
