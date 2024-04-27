@@ -27,11 +27,11 @@ export class QuestionController {
     return this.questionService.writeQuestion(+id, dto);
   }
 
-  //각 설문지의 투표 내용을 가져옴
-  // @Get('result/:id')
-  // getResult(@Param('id') id: string) {
-  //   return this.questionService.getResult(+id);
-  // }
+  //내가 작성한 이메일의 설문지 가져옴
+  @Get('mypaper/:email')
+  getMyPaper(@Param('email') email: string) {
+    return this.questionService.getMyPaper(email);
+  }
 
   //설문결과 토대로 통계를 내어줌
   @Get('statistics/:id')
