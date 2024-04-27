@@ -208,7 +208,9 @@ export class QuestionService {
     });
 
     dto.questions.map(async (q) => {
-      const qOption = await this.repoQuestionOption.findOneBy({ id: q.id });
+      const qOption = await this.repoQuestionOption.findOneBy({
+        ques_id: q.id,
+      });
       console.log(qOption);
       switch (qOption.type) {
         case questionType.단답형:
