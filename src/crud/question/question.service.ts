@@ -9,7 +9,6 @@ import {
 } from 'src/packet/question.entity';
 import { Repository } from 'typeorm';
 import { WriteMyDto, WriteQuestionDto } from './dto/insert-question.dto';
-import { generateRandomCode, randomCharactor } from 'src/utils/util';
 import { questionType } from 'src/type';
 
 @Injectable()
@@ -42,11 +41,13 @@ export class QuestionService {
         title: q.name,
         optionyn: q.optionyn,
       });
+
       const subQuestion = await this.repoQuestion.save(newQ);
 
       q.option.split(',').forEach(async (item) => {
         const newO = this.repoQuestionOption.create({
           ques_id: subQuestion.id,
+          type: q.type,
           name: item,
         });
         await this.repoQuestionOption.save(newO);
@@ -116,7 +117,7 @@ export class QuestionService {
               where: { ques_id: item.id },
               order: { id: 'ASC' },
             });
-            // const namelist = options.map((item) => item.name.trim()).join(',');
+
             return {
               ...item,
               option: options,
@@ -147,7 +148,6 @@ export class QuestionService {
       .then((result) => {
         const checkList = mydto.answer.split(',');
         checkList.map((check) => {
-          console.log(check, 'tt');
           const findObject = result.find((e) => e.name.trim() === check.trim());
 
           if (!findObject) return;
@@ -160,6 +160,7 @@ export class QuestionService {
       });
   }
 
+  // 객관식 형식 설문 처리
   async processRadio(mydto: WriteMyDto) {
     await this.repoQuestionOption
       .find({
@@ -178,7 +179,6 @@ export class QuestionService {
         });
       });
   }
-
   async writeQuestion(id: number, dto: WriteQuestionDto) {
     if (dto.questions.length <= 0) {
       return {
@@ -208,7 +208,9 @@ export class QuestionService {
     });
 
     dto.questions.map(async (q) => {
-      switch (q.type) {
+      const qOption = await this.repoQuestionOption.findOneBy({ id: q.id });
+      console.log(qOption);
+      switch (qOption.type) {
         case questionType.단답형:
           await this.repoQuestionOption
             .findOneBy({ ques_id: q.id })
@@ -240,7 +242,31 @@ export class QuestionService {
       time: Date(),
     };
   }
+  async getMyPaper(email: string) {
+    const list = await this.repoQuestionMain.find({
+      select: ['id', 'email', 'title', 'description'],
+      where: { email },
+      order: { createdAt: 'ASC' },
+    });
 
+    if (!list) {
+      return {
+        code: 404,
+        message: 'not found',
+        time: Date(),
+        result: null,
+      };
+    }
+    return {
+      code: 200,
+      message: 'success',
+      time: Date(),
+      result: {
+        list,
+      },
+    };
+  }
+  // 통계
   async getStatistic(id: number) {
     const main = await this.repoQuestionMain.findOneBy({ id });
 
