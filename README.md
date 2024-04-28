@@ -30,21 +30,22 @@
 
 ```bash
 # POST /question : 설문지 등록
+예시 : https://google.vote24.co.kr/question
 input params
-  title: string
-  description string
-  email: string
-  questions: array
-    type: number
-    name: string
-    option: string
+  title: string / 설문지 제목
+  description string / 설문지 설명
+  email: string / 작성자 이메일
+  questions: array // 설문지 종류 ( 배열 )
+    type: number // 설문지 타입
+    name: string //설문지 이름
+    option: string //
     optionyn: boolean
 
 output params
-  url: string
-  password : string
+  id: string / 생성된 설문지의 ID
 
 # GET /question : 등록 설문지 전체 조회
+예시 : https://google.vote24.co.kr/question/11
 
 # GET /question/[id] : 등록 설문지 조회
 
