@@ -62,6 +62,18 @@ export class QuestionService {
     };
   }
 
+  async deleteQuestion(id: number) {
+    await this.repoQuestionMain.update(id, {
+      useyn: () => 'useyn = false',
+    });
+
+    return {
+      code: 200,
+      message: 'success',
+      time: Date(),
+    };
+  }
+
   async findAll() {
     const list = await this.repoQuestionMain.find({
       select: ['id', 'email', 'title', 'description'],
@@ -247,7 +259,7 @@ export class QuestionService {
   async getMyPaper(email: string) {
     const list = await this.repoQuestionMain.find({
       select: ['id', 'email', 'title', 'description'],
-      where: { email },
+      where: { email, useyn: true },
       order: { createdAt: 'ASC' },
     });
 

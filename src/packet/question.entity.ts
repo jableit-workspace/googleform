@@ -19,6 +19,8 @@ export class QuestionMain extends BaseAutoEntity {
   url: string;
   @Column({ default: '', comment: '비밀번호' })
   password: string;
+  @Column({ default: true, comment: '활성화유무' })
+  useyn: boolean;
 }
 
 @Entity('question')
