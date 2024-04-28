@@ -305,7 +305,7 @@ export class QuestionService {
             const options = await this.repoQuestionOption.find({
               select: ['id', 'name', 'choice'],
               where: { ques_id: item.id },
-              order: { id: 'ASC' },
+              order: { id: 'DESC' },
             });
 
             return {
