@@ -211,7 +211,6 @@ export class QuestionService {
       const qOption = await this.repoQuestionOption.findOneBy({
         ques_id: q.id,
       });
-      console.log(qOption);
       switch (qOption.type) {
         case questionType.단답형:
           await this.repoQuestionOption
@@ -234,6 +233,7 @@ export class QuestionService {
         ques_sub_id: q.id,
         email: dto.email,
         answer: q.answer,
+        type: qOption.type,
       });
       await this.repoQuestionRecv.save(newQ);
     });
@@ -313,6 +313,33 @@ export class QuestionService {
         description: main.description,
         write_cnt: main.write_cnt,
         list,
+      },
+    };
+  }
+
+  // 통계리스트
+  async getStatisticList(id: number) {
+    const main = await this.repoQuestionRecv.find({
+      select: ['type', 'ques_sub_id', 'email', 'answer'],
+      where: { ques_id: id },
+      order: { ques_sub_id: 'ASC' },
+    });
+
+    if (!main) {
+      return {
+        code: 404,
+        message: 'not found',
+        time: Date(),
+        result: null,
+      };
+    }
+
+    return {
+      code: 200,
+      message: 'success',
+      time: Date(),
+      result: {
+        list: main,
       },
     };
   }

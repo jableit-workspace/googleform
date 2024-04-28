@@ -34,8 +34,15 @@ export class QuestionController {
   }
 
   //설문결과 토대로 통계를 내어줌
+  @Get('statistics_list/:id')
+  getStatisticList(@Param('id') id: string) {
+    return this.questionService.getStatisticList(+id);
+  }
+
+  //설문결과 토대로 통계를 내어줌
   @Get('statistics/:id')
   getStatistic(@Param('id') id: string) {
+    console.log('getStatistic');
     return this.questionService.getStatistic(+id);
   }
 }
