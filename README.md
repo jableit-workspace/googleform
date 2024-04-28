@@ -26,6 +26,10 @@
 
 [Nest](https://github.com/nestjs/nest) 구글 설문지 RestAPI 서버
 
+## 실행방법
+
+npm run start:dev
+
 ## API
 
 ```bash
