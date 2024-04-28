@@ -260,7 +260,7 @@ export class QuestionService {
     const list = await this.repoQuestionMain.find({
       select: ['id', 'email', 'title', 'description'],
       where: { email, useyn: true },
-      order: { createdAt: 'ASC' },
+      order: { createdAt: 'DESC' },
     });
 
     if (!list) {
@@ -297,7 +297,7 @@ export class QuestionService {
       .find({
         select: ['id', 'type', 'title', 'optionyn'],
         where: { qmain_id: id },
-        order: { id: 'DESC' },
+        order: { id: 'ASC' },
       })
       .then(async (result) => {
         return Promise.all(
@@ -305,7 +305,7 @@ export class QuestionService {
             const options = await this.repoQuestionOption.find({
               select: ['id', 'name', 'choice'],
               where: { ques_id: item.id },
-              order: { id: 'DESC' },
+              order: { id: 'ASC' },
             });
 
             return {
