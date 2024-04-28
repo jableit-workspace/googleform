@@ -297,7 +297,7 @@ export class QuestionService {
       .find({
         select: ['id', 'type', 'title', 'optionyn'],
         where: { qmain_id: id },
-        order: { id: 'ASC' },
+        order: { id: 'DESC' },
       })
       .then(async (result) => {
         return Promise.all(
