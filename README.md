@@ -139,15 +139,3 @@ output params
               answer: string / 설문 내용
 
 ```
-
-# GET /question/statistics/[id] : 설문 결과 통계 조회
-
-```
-
----
-
-```
-
-```
-
-```
