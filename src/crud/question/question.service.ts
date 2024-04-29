@@ -7,7 +7,7 @@ import {
   QuestionOption,
   QuestionRecv,
 } from 'src/packet/question.entity';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { WriteMyDto, WriteQuestionDto } from './dto/insert-question.dto';
 import { questionType } from 'src/type';
 
@@ -325,6 +325,79 @@ export class QuestionService {
         description: main.description,
         write_cnt: main.write_cnt,
         list,
+      },
+    };
+  }
+
+  // 통계
+  async getStatisticDanDab(id: number) {
+    const main = await this.repoQuestionMain.findOneBy({ id });
+
+    if (!main) {
+      return {
+        code: 404,
+        message: 'not found',
+        time: Date(),
+        result: null,
+      };
+    }
+
+    const list = await this.repoQuestion
+      .find({
+        select: ['id', 'type', 'title', 'optionyn'],
+        where: { qmain_id: id, type: Not(1) },
+        order: { id: 'ASC' },
+      })
+      .then(async (result) => {
+        return Promise.all(
+          result.map(async (item) => {
+            const options = await this.repoQuestionOption.find({
+              select: ['id', 'name', 'choice'],
+              where: { ques_id: item.id },
+              order: { id: 'ASC' },
+            });
+
+            return {
+              ...item,
+              options,
+            };
+          }),
+        );
+      });
+
+    const danlist = await this.repoQuestion
+      .find({
+        select: ['id', 'type', 'title', 'optionyn'],
+        where: { qmain_id: id, type: 1 },
+        order: { id: 'ASC' },
+      })
+      .then(async (result) => {
+        return Promise.all(
+          result.map(async (item) => {
+            const options = await this.repoQuestionRecv.find({
+              select: ['id', 'answer'],
+              where: { ques_sub_id: item.id },
+              order: { id: 'ASC' },
+            });
+
+            return {
+              ...item,
+              options,
+            };
+          }),
+        );
+      });
+
+    return {
+      code: 200,
+      message: 'success',
+      time: Date(),
+      result: {
+        title: main.title,
+        description: main.description,
+        write_cnt: main.write_cnt,
+        list,
+        danlist,
       },
     };
   }
