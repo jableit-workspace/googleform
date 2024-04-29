@@ -41,16 +41,20 @@ export class QuestionController {
     return this.questionService.getMyPaper(email);
   }
 
-  //설문결과 토대로 통계를 내어줌
+  //설문의 통계 리스트 전달
   @Get('statistics_list/:id')
   getStatisticList(@Param('id') id: string) {
     return this.questionService.getStatisticList(+id);
   }
 
+  @Get('statistics_danlist/:id')
+  getStatisticTest(@Param('id') id: string) {
+    return this.questionService.getStatisticDanDab(+id);
+  }
+
   //설문결과 토대로 통계를 내어줌
   @Get('statistics/:id')
   getStatistic(@Param('id') id: string) {
-    console.log('getStatistic');
     return this.questionService.getStatistic(+id);
   }
 }

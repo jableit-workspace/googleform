@@ -28,7 +28,13 @@
 
 ## 실행방법
 
-npm run start:dev
+pnpm install
+
+//develope mode
+pnpm run start:dev
+
+// operation mode
+pnpm run start
 
 ## API
 
@@ -79,8 +85,8 @@ output params
 ```
 
 ```bash
-   # GET /question : 설문지 정보가져오기
-  예시 : https://google.vote24.co.kr/question/ + id
+   # GET /question + id: 설문지 정보가져오기
+  예시 : https://google.vote24.co.kr/question/12
 output params
   code: number / 상태코드
   message: string / 상태메시지
@@ -108,7 +114,7 @@ output params
 
 ```bash
 # GET /question/statistics + id : 설문 통계 가져오기
-예시 : https://google.vote24.co.kr/question/statistics/11
+예시 : https://google.vote24.co.kr/question/statistics/12
 
 output params
   code: number / 상태코드
@@ -130,7 +136,7 @@ output params
 
 ```bash
 # GET /question/statistics_list/ + id : 설문통계 리스트 가져오기
-예시 https://google.vote24.co.kr/question/statistics_list/11
+예시 https://google.vote24.co.kr/question/statistics_list/12
 output params
   code: number / 상태코드
   message: string / 상태메시지
@@ -141,5 +147,21 @@ output params
               type: number / 설문 유형
               email: string / 이메일
               answer: string / 설문 내용
+
+```
+
+```bash
+# GET /question: 설문 전체 가져오기
+예시 https://google.vote24.co.kr/question
+output params
+  code: number / 상태코드
+  message: string / 상태메시지
+  time: string / API 호출 시간
+  result:
+          list: array / 설문내용
+              id: number / 설문 아이디
+              title: string / 설문 제목
+              email: string / 이메일
+              description: string / 설문 내용
 
 ```
