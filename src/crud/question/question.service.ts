@@ -302,11 +302,27 @@ export class QuestionService {
       .then(async (result) => {
         return Promise.all(
           result.map(async (item) => {
-            const options = await this.repoQuestionOption.find({
-              select: ['id', 'name', 'choice'],
-              where: { ques_id: item.id },
-              order: { id: 'ASC' },
-            });
+            let options;
+            item.type === 1
+              ? (options = await this.repoQuestionRecv
+                  .createQueryBuilder('p')
+                  .select(['p.id', 'p.answer'])
+                  .where('p.ques_id = :id', { id })
+                  .andWhere('p.ques_sub_id = :ques_sub_id', {
+                    ques_sub_id: item.id,
+                  })
+                  .orderBy('p.id', 'ASC')
+                  .getMany())
+              : //  await this.repoQuestionRecv.find({
+                //             select: ['id', 'answer'],
+                //             where: { ques_id: id, ques_sub_id: item.id },
+                //             order: { id: 'ASC' },
+                //           }))
+                (options = await this.repoQuestionOption.find({
+                  select: ['id', 'name', 'choice'],
+                  where: { ques_id: item.id },
+                  order: { id: 'ASC' },
+                }));
 
             return {
               ...item,
@@ -328,6 +344,55 @@ export class QuestionService {
       },
     };
   }
+
+  // 통계
+  // async getStatistic(id: number) {
+  //   const main = await this.repoQuestionMain.findOneBy({ id });
+
+  //   if (!main) {
+  //     return {
+  //       code: 404,
+  //       message: 'not found',
+  //       time: Date(),
+  //       result: null,
+  //     };
+  //   }
+
+  //   const list = await this.repoQuestion
+  //     .find({
+  //       select: ['id', 'type', 'title', 'optionyn'],
+  //       where: { qmain_id: id },
+  //       order: { id: 'ASC' },
+  //     })
+  //     .then(async (result) => {
+  //       return Promise.all(
+  //         result.map(async (item) => {
+  //           const options = await this.repoQuestionOption.find({
+  //             select: ['id', 'name', 'choice'],
+  //             where: { ques_id: item.id },
+  //             order: { id: 'ASC' },
+  //           });
+
+  //           return {
+  //             ...item,
+  //             options,
+  //           };
+  //         }),
+  //       );
+  //     });
+
+  //   return {
+  //     code: 200,
+  //     message: 'success',
+  //     time: Date(),
+  //     result: {
+  //       title: main.title,
+  //       description: main.description,
+  //       write_cnt: main.write_cnt,
+  //       list,
+  //     },
+  //   };
+  // }
 
   // 통계
   async getStatisticDanDab(id: number) {
