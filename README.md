@@ -28,8 +28,13 @@
 
 ## 실행방법
 
-npm install
-npm run start:dev
+pnpm install
+
+//develope mode
+pnpm run start:dev
+
+// operation mode
+pnpm run start
 
 ## API
 
